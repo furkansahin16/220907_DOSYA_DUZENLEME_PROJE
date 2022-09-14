@@ -117,16 +117,16 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
+
+                Klasör çöpKutusu = new Klasör(path)
+                {
+                    Klasör = klasör,
+                };
+
+                klasör.Klasörler.Add(çöpKutusu);
+
+                AnaKlasör.Klasörüm.ÇöpKutusu = çöpKutusu;
             }
-
-            Klasör çöpKutusu = new Klasör(path)
-            {
-                Klasör = klasör,
-            };
-
-            klasör.Klasörler.Add(çöpKutusu);
-            
-            AnaKlasör.Klasörüm.ÇöpKutusu = çöpKutusu;
         }
 
         /// <summary>
@@ -140,16 +140,18 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
             if (!Directory.Exists(kayıtYolu))
             {
                 Directory.CreateDirectory(kayıtYolu);
+
+                Klasör kayıtKlasörü = new Klasör(kayıtYolu)
+                {
+                    Klasör = klasör,
+                };
+
+                klasör.Klasörler.Add(kayıtKlasörü);
+
+                AnaKlasör.Klasörüm.KayıtKlasörü = kayıtKlasörü;
             }
-
-            Klasör kayıtKlasörü = new Klasör(kayıtYolu)
-            {
-                Klasör = klasör,
-            };
-
-            klasör.Klasörler.Add(kayıtKlasörü);
-
-            AnaKlasör.Klasörüm.KayıtKlasörü = kayıtKlasörü;
         }
+
+
     }
 }

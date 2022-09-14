@@ -18,7 +18,19 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
         private AnaKlasör(string dosyaYolu) : base(dosyaYolu)
         {
             this.Klasör = this;
+            MevcutÇöpKutusuVeKayıtKlasörüAta();
             KayıtOku();
+        }
+
+        private void MevcutÇöpKutusuVeKayıtKlasörüAta()
+        {
+            foreach (Klasör klasör in this.Klasörler)
+            {
+                if (klasör.İsim == "ÇöpKutusu")
+                    this.ÇöpKutusu = klasör;
+                if (klasör.İsim == ".sv")
+                    this.KayıtKlasörü = klasör;
+            }
         }
 
         ~AnaKlasör()
