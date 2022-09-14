@@ -22,17 +22,6 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
             KayıtOku();
         }
 
-        private void MevcutÇöpKutusuVeKayıtKlasörüAta()
-        {
-            foreach (Klasör klasör in this.Klasörler)
-            {
-                if (klasör.İsim == "ÇöpKutusu")
-                    this.ÇöpKutusu = klasör;
-                if (klasör.İsim == ".sv")
-                    this.KayıtKlasörü = klasör;
-            }
-        }
-
         ~AnaKlasör()
         {
             DosyalarıKaydet();
@@ -76,9 +65,9 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
         /// </summary>
         /// <param name="dosyaYolu"></param>
         /// <param name="açıklama"></param>
-        public void DosyaAçıklamaEkle(string dosyaYolu, string açıklama)
+        public void DosyaAçıklamaEkle(string dosyaİsmi, string açıklama)
         {
-            DosyaBul(dosyaYolu).DosyaAçıklaması = açıklama;
+            DosyaBul(dosyaİsmi).DosyaAçıklaması = açıklama;
         }
         
         /// <summary>
@@ -86,9 +75,9 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
         /// </summary>
         /// <param name="dosyaYolu"></param>
         /// <param name="geçerlilikSüresi"></param>
-        public void DosyaGeçerlilikSüresiEkle(string dosyaYolu, DateTime geçerlilikSüresi)
+        public void DosyaGeçerlilikSüresiEkle(string dosyaİsmi, DateTime geçerlilikSüresi)
         {
-            DosyaBul(dosyaYolu).GeçerlilikSüresi = geçerlilikSüresi;
+            DosyaBul(dosyaİsmi).GeçerlilikSüresi = geçerlilikSüresi;
         }
 
         /// <summary>
@@ -202,11 +191,11 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
         /// </summary>
         /// <param name="dosyaYolu"></param>
         /// <returns></returns>
-        private Dosya DosyaBul(string dosyaYolu)
+        private Dosya DosyaBul(string dosyaİsmi)
         {
             foreach (Dosya dosya1 in this.Dosyalar)
             {
-                if (dosya1.DosyaYolu == dosyaYolu)
+                if (dosya1.İsim == dosyaİsmi)
                     return dosya1;
             }
 
@@ -214,12 +203,23 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
             {
                 foreach (Dosya dosya2 in klasör.Dosyalar)
                 {
-                    if (dosya2.DosyaYolu == dosyaYolu)
+                    if (dosya2.İsim == dosyaİsmi)
                         return dosya2;
                 }
             }
 
             throw new Exception("Dosya bulunamadı");
+        }
+
+        private void MevcutÇöpKutusuVeKayıtKlasörüAta()
+        {
+            foreach (Klasör klasör in this.Klasörler)
+            {
+                if (klasör.İsim == "ÇöpKutusu")
+                    this.ÇöpKutusu = klasör;
+                if (klasör.İsim == ".sv")
+                    this.KayıtKlasörü = klasör;
+            }
         }
     }
 }
