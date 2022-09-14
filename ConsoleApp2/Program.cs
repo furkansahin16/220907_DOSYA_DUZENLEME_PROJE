@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dosya_Duzenleme.Infrastructure.Repository;
-using Dosya_Duzenleme.Domain.Entities;
 
 namespace ConsoleApp2
 {
@@ -12,11 +11,14 @@ namespace ConsoleApp2
     {
         static void Main(string[] args)
         {
-            KlasörDüzenleme.KlasörDüzenle.DüzenlemeKlasörüAlma(@"C:\Users\Furkan\Desktop\Yeni klasör");
-            KlasörDüzenleme.KlasörDüzenle.DosyalarıUzantılarınaGöreKlasöreTaşı(AnaKlasör.Klasörüm);
-            KlasörDüzenleme.KlasörDüzenle.GeçerlilikSüresineGöreÇöpKutusunaAt(AnaKlasör.Klasörüm);
-            KlasörDüzenleme.KlasörDüzenle.DosyalarıKaydet(AnaKlasör.Klasörüm);
+            AnaKlasör.KlasörOluştur(@"C:\Users\Furkan\Desktop\Yeni klasör");
+            
+            AnaKlasör.Klasörüm.DosyalarıUzantılarınaGöreKlasöreTaşı();
+            AnaKlasör.Klasörüm.GeçerlilikSüresineGöreÇöpKutusunaAt();
 
+            AnaKlasör.Klasörüm.DosyaAçıklamaEkle(@"C:\Users\Furkan\Desktop\Yeni klasör\.jpeg\ferrari-sf71h-formula-one-f1-cars-2018-4k.jpeg", "Açıklama");
+
+            AnaKlasör.Klasörüm.DosyalarıKaydet();
 
 
             Console.ReadLine();

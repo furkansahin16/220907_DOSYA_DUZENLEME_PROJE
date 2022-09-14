@@ -8,23 +8,23 @@ using System.Threading.Tasks;
 
 namespace Dosya_Duzenleme.Infrastructure.Repository
 {
-    public class DüzenlemeRepo
+    internal static class DüzenlemeRepo
     {
         /// <summary>
         /// Dosyayı uzantısının bulunduğu klasöre taşır.
         /// </summary>
         /// <param name="dosya"></param>
         /// <param name="anaKlasör"></param>
-        protected void DosyayıKendiKlasörüneAt(Dosya dosya, AnaKlasör anaKlasör)
+        internal static void DosyayıKendiKlasörüneAt(Dosya dosya, Klasör klasör)
         {
-            foreach (Klasör klasör in anaKlasör._klasörler)
+            foreach (Klasör item in klasör.Klasörler)
             {
-                if (dosya.DosyaUzantısı == klasör.İsim)
+                if (dosya.DosyaUzantısı == item.İsim)
                 {
-                    string yeniDosyaYolu = Path.Combine(klasör.DosyaYolu, dosya.İsim);
+                    string yeniDosyaYolu = Path.Combine(item.DosyaYolu, dosya.İsim);
                     File.Move(dosya.DosyaYolu, yeniDosyaYolu);
-                    klasör._dosyalar.Add(dosya);
-                    dosya.Klasör = klasör;
+                    dosya.Klasör = item;
+                    dosya.Klasör.Dosyalar.Add(dosya);
                     return;
                 }
             }
@@ -35,7 +35,7 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
         /// </summary>
         /// <param name="dosya"></param>
         /// <returns></returns>
-        protected bool GeçerlilikSüresiDolduMu(Dosya dosya)
+        internal static bool GeçerlilikSüresiDolduMu(Dosya dosya)
         {
             return dosya.GeçerlilikSüresi >= DateTime.Now ? true : false;
         }
@@ -45,12 +45,11 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
         /// </summary>
         /// <param name="dosya"></param>
         /// <param name="çöpKutusu"></param>
-        protected void ÇöpKutusunaEkle(Dosya dosya)
+        internal static void ÇöpKutusunaEkle(Dosya dosya)
         {
-            dosya.Klasör._dosyalar.Remove(dosya);
+            dosya.Klasör.Dosyalar.Remove(dosya);
             dosya.Klasör = AnaKlasör.Klasörüm.ÇöpKutusu;
-            AnaKlasör.Klasörüm.ÇöpKutusu._dosyalar.Add(dosya);
-
+            AnaKlasör.Klasörüm.ÇöpKutusu.Dosyalar.Add(dosya);
             string hedef = Path.Combine(AnaKlasör.Klasörüm.ÇöpKutusu.DosyaYolu, dosya.İsim);
             File.Move(dosya.DosyaYolu, hedef);
         }
@@ -60,7 +59,7 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
         /// </summary>
         /// <param name="dosyalar"></param>
         /// <returns></returns>
-        protected List<string> DosyaUzantıListesiAl(List<Dosya> dosyalar)
+        internal static List<string> DosyaUzantıListesiAl(List<Dosya> dosyalar)
         {
             List<string> uzantılar = new List<string>();
 
@@ -73,7 +72,6 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
                     uzantılar.Add(uzantı);
                 }
             }
-
             return uzantılar;
         }
 
@@ -82,23 +80,27 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
         /// </summary>
         /// <param name="uzantılar"></param>
         /// <param name="anaKlasör"></param>
-        protected void UzantılaraGöreKlasörOluştur(Klasör anaKlasör)
+        internal static void UzantılaraGöreKlasörOluştur(Klasör klasör)
         {
-            List<string> uzantılar = DosyaUzantıListesiAl(anaKlasör._dosyalar);
+            List<string> uzantılar = DosyaUzantıListesiAl(klasör.Dosyalar);
 
             foreach (string item in uzantılar)
             {
-                Klasör klasör = new Klasör(anaKlasör.DosyaYolu + @"\" + item)
+                string path = Path.Combine(klasör.DosyaYolu, item);
+
+                if (!Directory.Exists(path))
                 {
-                    Klasör = anaKlasör,
+                    Directory.CreateDirectory(path);
+                }
+
+                Klasör yeniKlasör = new Klasör(path)
+                {
+                    Klasör = klasör,
                 };
 
-                anaKlasör._klasörler.Add(klasör);
+                klasör.Klasörler.Add(yeniKlasör);
 
-                if (!Directory.Exists(klasör.DosyaYolu))
-                {
-                    Directory.CreateDirectory(klasör.DosyaYolu);
-                }
+                
             }
 
         }
@@ -108,87 +110,46 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
         /// </summary>
         /// <param name="anaKlasör"></param>
         /// <returns></returns>
-        protected void ÇöpKutusuOluştur(AnaKlasör anaKlasör)
+        internal static void ÇöpKutusuOluştur(Klasör klasör)
         {
-            Klasör klasör = new Klasör(anaKlasör.DosyaYolu + @"\ÇöpKutusu")
+            string path = Path.Combine(klasör.DosyaYolu, "ÇöpKutusu");
+
+            if (!Directory.Exists(path))
             {
-                Klasör = anaKlasör,
+                Directory.CreateDirectory(path);
+            }
+
+            Klasör çöpKutusu = new Klasör(path)
+            {
+                Klasör = klasör,
             };
 
-            if (!Directory.Exists(klasör.DosyaYolu))
-            {
-                Directory.CreateDirectory(klasör.DosyaYolu);
-                anaKlasör._klasörler.Add(klasör);
-
-            }
-            anaKlasör.ÇöpKutusu = klasör;
+            klasör.Klasörler.Add(çöpKutusu);
+            
+            AnaKlasör.Klasörüm.ÇöpKutusu = çöpKutusu;
         }
 
         /// <summary>
         /// Gönderilen ana klasör içerisine kayıtları tutacak bir klasör oluşturur.
         /// </summary>
         /// <param name="anaKlasör"></param>
-        protected void KayıtKlasörüOluştur(AnaKlasör anaKlasör)
+        internal static void KayıtKlasörüOluştur(Klasör klasör)
         {
-            string kayıtYolu = Path.Combine(anaKlasör.DosyaYolu + @"\.sv");
-
-            Klasör kayıtKlasörü = new Klasör(kayıtYolu)
-            {
-                Klasör = anaKlasör,
-            };
+            string kayıtYolu = Path.Combine(klasör.DosyaYolu + @"\.sv");
 
             if (!Directory.Exists(kayıtYolu))
             {
                 Directory.CreateDirectory(kayıtYolu);
-                anaKlasör._klasörler.Add(kayıtKlasörü);
             }
 
-            anaKlasör.KayıtKlasörü = kayıtKlasörü;
-        }
-
-        /// <summary>
-        /// Gönderilen bir klasörün içindeki klasörleri klasörün klasör listesine atar.
-        /// </summary>
-        /// <param name="klasör"></param>
-        /// <returns></returns>
-        protected void KlasördenKlasörListesiAta(Klasör klasör)
-        {
-            klasör._klasörler = new List<Klasör>();
-
-            string[] klasörDizi = Directory.GetDirectories(klasör.DosyaYolu);
-
-            foreach (string item in klasörDizi)
+            Klasör kayıtKlasörü = new Klasör(kayıtYolu)
             {
-                Klasör yeniKlasör = new Klasör(item);
+                Klasör = klasör,
+            };
 
-                yeniKlasör.Klasör = klasör;
+            klasör.Klasörler.Add(kayıtKlasörü);
 
-                klasör._klasörler.Add(yeniKlasör);
-
-                KlasördenDosyaListesiAta(yeniKlasör);
-                KlasördenKlasörListesiAta(yeniKlasör);
-            }
-        }
-
-        /// <summary>
-        /// Gönderilen bir klasörün içindeki dosyaları klasörün dosya listesine atar.
-        /// </summary>
-        /// <param name="klasör"></param>
-        /// <returns></returns>
-        protected void KlasördenDosyaListesiAta(Klasör klasör)
-        {
-            klasör._dosyalar = new List<Dosya>();
-
-            string[] dosyalarDizi = Directory.GetFiles(klasör.DosyaYolu);
-
-            foreach (string item in dosyalarDizi)
-            {
-                Dosya dosya = new Dosya(item);
-
-                dosya.Klasör = klasör;
-
-                klasör._dosyalar.Add(dosya);
-            }
+            AnaKlasör.Klasörüm.KayıtKlasörü = kayıtKlasörü;
         }
     }
 }

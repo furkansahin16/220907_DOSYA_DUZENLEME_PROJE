@@ -9,10 +9,8 @@ namespace Dosya_Duzenleme.Domain.Interface
 {
     public interface IDosyaDüzenleme
     {
-        void DosyaAçıklamaEkle(ref Dosya dosya, string açıklama);
+        void DosyaAçıklamaEkle(string dosyaYolu, string açıklama);
 
-        void DosyaGeçerlilikSüresiEkle(ref Dosya dosya, DateTime geçerlilikSüresi);
-
-        bool AynıDosyaVarMı(List<Dosya> dosyalar, Dosya dosya);
+        void DosyaGeçerlilikSüresiEkle(string dosyaYolu, DateTime geçerlilikSüresi);
     }
 }

@@ -9,13 +9,11 @@ namespace Dosya_Duzenleme.Domain.Interface
 {
     public interface IKlasörDüzenleme
     {
-        void DüzenlemeKlasörüAlma(string dosyaYolu);
+        void DosyalarıUzantılarınaGöreKlasöreTaşı();
 
-        void DosyalarıUzantılarınaGöreKlasöreTaşı(AnaKlasör anaKlasör);
+        void GeçerlilikSüresineGöreÇöpKutusunaAt();
 
-        void GeçerlilikSüresineGöreÇöpKutusunaAt(AnaKlasör anaKlasör);
-
-        void DosyalarıKaydet(AnaKlasör anaKlasör);
+        void DosyalarıKaydet();
 
     }
 }

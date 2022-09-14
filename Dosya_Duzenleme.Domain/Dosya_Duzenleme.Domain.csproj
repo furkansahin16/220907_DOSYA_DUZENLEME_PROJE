@@ -64,7 +64,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\AnaKlasör.cs" />
     <Compile Include="Entities\BaseEntity.cs" />
     <Compile Include="Entities\Dosya.cs" />
     <Compile Include="Entities\Klasör.cs" />
@@ -76,5 +75,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

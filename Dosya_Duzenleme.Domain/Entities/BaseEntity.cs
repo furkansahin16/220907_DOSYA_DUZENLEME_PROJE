@@ -45,5 +45,10 @@ namespace Dosya_Duzenleme.Domain.Entities
             DirectoryInfo di = new DirectoryInfo(value);
             İsim = di.Name;
         }
+
+        public override string ToString()
+        {
+            return İsim;
+        }
     }
 }
