@@ -8,7 +8,6 @@ namespace Dosya_Duzenleme.Domain.Entities
     {
         public Dosya(string dosyaYolu) : base(dosyaYolu)
         {
-            base.SonDeğiştirmeTarihi = File.GetLastAccessTime(dosyaYolu);
         }
 
         public string DosyaAçıklaması { get; set; }

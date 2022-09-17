@@ -14,12 +14,24 @@ namespace Dosya_Duzenleme.Domain.Entities
         public string DosyaYolu
         {
             get { return _dosyaYolu; }
-            private set { İsimAta(value);
+            set { İsimAta(value);
                 _dosyaYolu = value;
             }
         }
 
-        public DateTime SonDeğiştirmeTarihi { get; protected set; }
+        public DateTime SonDeğiştirmeTarihi
+        {
+            get
+            {
+                switch (this.DosyaTipi)
+                {
+                    case DosyaTipleri.Dosya: return File.GetLastAccessTime(this.DosyaYolu);
+                    case DosyaTipleri.Klasör: return Directory.GetLastAccessTime(this.DosyaYolu);
+                    default: break;
+                }
+                return DateTime.MinValue;
+            }
+        }
 
         public abstract DosyaTipleri DosyaTipi { get; }
 

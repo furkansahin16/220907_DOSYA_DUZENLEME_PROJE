@@ -95,7 +95,6 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
                 if (DüzenlemeRepo.GeçerlilikSüresiDolduMu(dosya))
                 {
                     DüzenlemeRepo.ÇöpKutusunaEkle(dosya);
-                    dosya.Klasör.Dosyalar.Remove(dosya);
                 }
             }
         }
@@ -125,12 +124,24 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
             JavaScriptSerializer js = new JavaScriptSerializer();
             string json = JsonConvert.SerializeObject(this.KayıtVerisi, Formatting.None, new JsonSerializerSettings()
             { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-
+            KayıtDosyasıNesnesi();
             FileStream fs = new FileStream(this.kayıtYeri, FileMode.OpenOrCreate, FileAccess.Write);
             StreamWriter sw = new StreamWriter(fs);
             sw.Write(json);
             sw.Close();
             fs.Close();
+        }
+
+        private void KayıtDosyasıNesnesi()
+        {
+            if (!File.Exists(kayıtYeri))
+            {
+                Dosya kayıtDosyası = new Dosya(kayıtYeri)
+                {
+                    Klasör = AnaKlasör.Klasörüm.KayıtKlasörü,
+                };
+                AnaKlasör.Klasörüm.KayıtKlasörü.Dosyalar.Add(kayıtDosyası);
+            }
         }
 
         /// <summary>
@@ -147,7 +158,7 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
 
             foreach (Klasör klasör in this.Klasörler)
             {
-                if (klasör.İsim != this.ÇöpKutusu.ToString() && klasör.İsim != this.KayıtKlasörü.ToString())
+                if (klasör.İsim != ".sv")
                     foreach (Dosya dosya2 in klasör.Dosyalar)
                     {
                         dosyalar.Add(dosya2);
@@ -181,8 +192,8 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
         {
             foreach (Dosya dosya in kayıtlar)
             {
-                DosyaBul(dosya.DosyaYolu).DosyaAçıklaması = dosya.DosyaAçıklaması;
-                DosyaBul(dosya.DosyaYolu).GeçerlilikSüresi = dosya.GeçerlilikSüresi;
+                DosyaBul(dosya.İsim).DosyaAçıklaması = dosya.DosyaAçıklaması;
+                DosyaBul(dosya.İsim).GeçerlilikSüresi = dosya.GeçerlilikSüresi;
             }
         }
 
@@ -191,7 +202,7 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
         /// </summary>
         /// <param name="dosyaYolu"></param>
         /// <returns></returns>
-        private Dosya DosyaBul(string dosyaİsmi)
+        public Dosya DosyaBul(string dosyaİsmi)
         {
             foreach (Dosya dosya1 in this.Dosyalar)
             {
@@ -211,6 +222,26 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
             throw new Exception("Dosya bulunamadı");
         }
 
+        /// <summary>
+        /// Gönderilen isimdeki klasörü bulur
+        /// </summary>
+        /// <param name="dosyaİsmi"></param>
+        /// <returns></returns>
+        public Klasör KlasörBul(string dosyaİsmi)
+        {
+            foreach (var item in this.Klasörler)
+            {
+                if (item.İsim == dosyaİsmi)
+                {
+                    return item;
+                }
+            }
+            throw new Exception("Klasör bulunamadı");
+        }
+
+        /// <summary>
+        /// Kayıt klasörü veya çöp kutusu varsa onları ana klasöre atar.
+        /// </summary>
         private void MevcutÇöpKutusuVeKayıtKlasörüAta()
         {
             foreach (Klasör klasör in this.Klasörler)

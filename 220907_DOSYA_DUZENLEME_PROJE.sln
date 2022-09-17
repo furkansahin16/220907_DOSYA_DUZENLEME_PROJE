@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dosya_Duzenleme.Domain", "D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dosya_Duzenleme.Infrastructure", "Dosya_Duzenleme.Infrastructure\Dosya_Duzenleme.Infrastructure.csproj", "{C229D5CD-4D08-4C55-B47C-71CA07FFF255}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dosya_Duzenleme.Presentation", "Dosya_Duzenleme.Presentation\Dosya_Duzenleme.Presentation.csproj", "{5B84A0F8-D461-44AD-9491-707ECCE6185C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C229D5CD-4D08-4C55-B47C-71CA07FFF255}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C229D5CD-4D08-4C55-B47C-71CA07FFF255}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C229D5CD-4D08-4C55-B47C-71CA07FFF255}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B84A0F8-D461-44AD-9491-707ECCE6185C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B84A0F8-D461-44AD-9491-707ECCE6185C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B84A0F8-D461-44AD-9491-707ECCE6185C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B84A0F8-D461-44AD-9491-707ECCE6185C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

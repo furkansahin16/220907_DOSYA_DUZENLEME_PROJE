@@ -48,7 +48,6 @@ namespace Dosya_Duzenleme.Domain.Entities
 
         public Klasör(string dosyaYolu) : base(dosyaYolu)
         {
-            base.SonDeğiştirmeTarihi = Directory.GetLastAccessTime(dosyaYolu);
             this.Dosyalar = DosyaListesiAta();
             this.Klasörler = KlasörListesiAta();
         }

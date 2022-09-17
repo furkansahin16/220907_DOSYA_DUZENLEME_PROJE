@@ -25,6 +25,7 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
                     File.Move(dosya.DosyaYolu, yeniDosyaYolu);
                     dosya.Klasör = item;
                     dosya.Klasör.Dosyalar.Add(dosya);
+                    dosya.DosyaYolu = yeniDosyaYolu;
                     return;
                 }
             }
@@ -37,7 +38,11 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
         /// <returns></returns>
         internal static bool GeçerlilikSüresiDolduMu(Dosya dosya)
         {
-            return dosya.GeçerlilikSüresi >= DateTime.Now ? true : false;
+            if (dosya.GeçerlilikSüresi < DateTime.Now && dosya.GeçerlilikSüresi != DateTime.MinValue)
+            {
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -52,6 +57,7 @@ namespace Dosya_Duzenleme.Infrastructure.Repository
             AnaKlasör.Klasörüm.ÇöpKutusu.Dosyalar.Add(dosya);
             string hedef = Path.Combine(AnaKlasör.Klasörüm.ÇöpKutusu.DosyaYolu, dosya.İsim);
             File.Move(dosya.DosyaYolu, hedef);
+            dosya.DosyaYolu = Path.Combine(AnaKlasör.Klasörüm.ÇöpKutusu.DosyaYolu, dosya.İsim);
         }
 
         /// <summary>
